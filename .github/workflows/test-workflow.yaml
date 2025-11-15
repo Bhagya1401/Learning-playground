@@ -10,7 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     env: 
       Message: ${{github.event.head_commit.message}}
-    if:  $Message != ''
     steps:
       - name: "Print commit"
         run: echo "$Message"
