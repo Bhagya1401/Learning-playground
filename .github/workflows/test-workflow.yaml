@@ -1,6 +1,6 @@
 name: First workflow
 
-run-name: ${{github.actor}} is learning how Github actions work
+run-name: Automatic version and changelog updates
  
 permissions:
   contents: write
@@ -30,6 +30,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/setup-node@v4
 
+
       - name: "Set up user and configure git"
         run: |
           git config user.name "github-actions"
@@ -39,5 +40,24 @@ jobs:
       - name: "Bump version"
         run: npm version patch
 
+      - name: "Get current date"
+        run: echo "DATE=$(date +'%m/%d/%Y')" >> $GITHUB_ENV
+
+
+      - name: "Update CHANGELOG"
+        run: |
+          $TARGET_LINE = 3
+
+
+          awk -v n="$TARGET_LINE" -v entry="${{github.event.pull_request.title}} $DATE" '
+          NR == n { print entry }
+          { print }
+          ' CHANGELOG.md > CHANGELOG.new.md
+
+          mv CHANGELOG.new.md CHANGELOG.md
+
       - name: Push changes
-        run: git push --follow-tags
+        run: |
+          git add .
+          git commit -m "chore: Updated package.json version and changelog.md"
+          git push --follow-tags
