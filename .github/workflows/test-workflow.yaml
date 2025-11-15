@@ -12,5 +12,6 @@ jobs:
       Message: ${{github.event.head_commit.message}}
     if:  $Message != ''
     steps:
-      run: echo "$Message"
+      - name: "Print commit"
+        run: echo "$Message"
 
