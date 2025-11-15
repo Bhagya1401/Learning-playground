@@ -5,16 +5,23 @@ run-name: ${{github.actor}} is learning how Github actions work
 on: 
   pull_request:
     branches: test-branch
+    types: closed  
 
 
 
 jobs:
-  read-push-commit:
+  read-PR-desc:
     runs-on: ubuntu-latest
     env: 
-      Commits: ${{github.event.pull_request.commits}}
       PR_desc: ${{github.event.pull_request.body}}
     steps:
-      - name: "Print commit"
-        run: echo "This is the PR body - $PR_desc and this this list of commits $Commits"
+      - name: "Print PR description"
+        run: echo "This is the PR body - $PR_desc and this"
 
+  update-version:
+    runs-on: ubuntu-latest
+    if: ${{github.event.pull_request.merged}}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v4
+      - run: npm version patch
