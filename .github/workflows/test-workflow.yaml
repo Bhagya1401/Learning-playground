@@ -1,0 +1,16 @@
+name: First workflow
+
+run-name: ${{github.actor}} is learning how Github actions work
+
+on: push
+
+
+jobs:
+  read-push-commit:
+    runs-on: ubuntu-latest
+    env: 
+      Message: ${{github.event.head_commit.message}}
+    if:  $Message != ''
+    steps:
+      run: echo "$Message"
+
