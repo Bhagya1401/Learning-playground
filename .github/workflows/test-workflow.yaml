@@ -2,15 +2,19 @@ name: First workflow
 
 run-name: ${{github.actor}} is learning how Github actions work
 
-on: push
+on: 
+  pull_request:
+    branches: test-branch
+
 
 
 jobs:
   read-push-commit:
     runs-on: ubuntu-latest
     env: 
-      Message: ${{github.event.head_commit.message}}
+      Commits: ${{github.event.pull_request.commits}}
+      PR_desc: ${{github.event.pull_request.body}}
     steps:
       - name: "Print commit"
-        run: echo "$Message"
+        run: echo "This is the PR body - $PR_desc and this this list of commits $Commits"
 
