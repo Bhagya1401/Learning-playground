@@ -38,7 +38,9 @@ jobs:
 
 
       - name: "Bump version"
-        run: npm version patch
+        run: | 
+          npm version patch
+          echo "NEW_VERSION=$(node -p \"require('./package.json').version\")" >> $GITHUB_ENV
 
       - name: "Get current date"
         run: echo "DATE=$(date +'%m/%d/%Y')" >> $GITHUB_ENV
@@ -49,7 +51,7 @@ jobs:
           $TARGET_LINE = 3
 
 
-          awk -v n="$TARGET_LINE" -v entry="${{github.event.pull_request.title}} $DATE" '
+          awk -v n="$TARGET_LINE" -v entry="## Release $NEW_VERSION ($DATE)\n- ${{github.event.pull_request.title}}" '
           NR == n { print entry }
           { print }
           ' CHANGELOG.md > CHANGELOG.new.md
