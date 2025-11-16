@@ -41,7 +41,8 @@ jobs:
       - name: "Bump version"
         run: |
           npm version patch --no-git-tag-version
-          echo "UPDATED_VERSION = $(npm pkg get version)"        
+          echo "UPDATED_VERSION = $(npm pkg get version)" >> $GITHUB_ENV      
+
       - name: "Get current date"
         run: echo "DATE=$(date +'%m/%d/%Y')" >> $GITHUB_ENV
 
@@ -49,7 +50,7 @@ jobs:
       - name: "Update CHANGELOG"
         run: |
           TARGET_LINE=3
-          ENTRY="## Release $NEW_VERSION ($DATE)
+          ENTRY="## Release $UPDATED_VERSION ($DATE)
           - $PR_TITLE"
 
           awk -v n="$TARGET_LINE" -v entry="$ENTRY" '
@@ -59,8 +60,7 @@ jobs:
 
           mv CHANGELOG.new.md CHANGELOG.md
 
-      - name: Push changes
+      - name: Commit and push changes
         run: |
-          git add .
-          git commit -m "chore: Updated package.json version and changelog.md"
+          git commit -am "chore: Updated package.json version and changelog.md"
           git push --follow-tags
