@@ -39,8 +39,9 @@ jobs:
 
 
       - name: "Bump version"
-        run: npm version patch
-          
+        run: |
+          npm version patch --no-git-tag-version
+          echo "UPDATED_VERSION = $(npm pkg get version)"        
       - name: "Get current date"
         run: echo "DATE=$(date +'%m/%d/%Y')" >> $GITHUB_ENV
 
