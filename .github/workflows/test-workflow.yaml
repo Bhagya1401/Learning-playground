@@ -50,10 +50,9 @@ jobs:
 
       - name: "Update CHANGELOG"
         run: |
-          $TARGET_LINE = 3
-
-          $ENTRY = "## Release $NEW_VERSION \($DATE)
-          - ${{github.event.pull_request.title}}"
+          TARGET_LINE=3
+          ENTRY="## Release $NEW_VERSION ($DATE)
+          - $PR_TITLE"
 
           awk -v n="$TARGET_LINE" -v entry="$ENTRY" '
           NR == n { print entry }
