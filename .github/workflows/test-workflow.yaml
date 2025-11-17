@@ -51,7 +51,9 @@ jobs:
         run: |
           TARGET_LINE=3
           ENTRY="## Release $UPDATED_VERSION ($DATE)
-          - $PR_TITLE"
+          - $PR_TITLE
+          
+          "
 
           awk -v n="$TARGET_LINE" -v entry="$ENTRY" '
           NR == n { print entry }
