@@ -47,7 +47,7 @@ jobs:
         run: |
           TARGET_LINE=3
           ENTRY="## Release $UPDATED_VERSION ($DATE)
-          - $PR_BRANCH_NAME
+          - [$PR_TITLE](https://github.com/features/$PR_BRANCH_NAME)
 
           "
 
