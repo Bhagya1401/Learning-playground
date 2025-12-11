@@ -1,21 +1,19 @@
 name: First workflow
 
 run-name: Automatic version and changelog updates
- 
+
 permissions:
   contents: write
 
-on: 
+on:
   pull_request:
-    branches: test-branch
-    types: closed  
-
-
+    branches: new-test-branch
+    types: closed
 
 jobs:
   read-PR-desc:
     runs-on: ubuntu-latest
-    env: 
+    env:
       PR_desc: ${{github.event.pull_request.body}}
     steps:
       - name: "Print PR description"
@@ -26,33 +24,31 @@ jobs:
     if: ${{github.event.pull_request.merged}}
     env:
       PR_TITLE: ${{github.event.pull_request.title}}
+      PR_BRANCH_NAME: ${{github.head_ref}}
     steps:
       - uses: actions/checkout@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-
 
       - name: "Set up user and configure git"
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
 
-
       - name: "Bump version"
         run: |
           npm version patch --no-git-tag-version
-          echo "UPDATED_VERSION=$(npm pkg get version | tr -d '"' )" >> $GITHUB_ENV      
+          echo "UPDATED_VERSION=$(npm pkg get version | tr -d '"' )" >> $GITHUB_ENV
 
       - name: "Get current date"
         run: echo "DATE=$(date +'%m/%d/%Y')" >> $GITHUB_ENV
-
 
       - name: "Update CHANGELOG"
         run: |
           TARGET_LINE=3
           ENTRY="## Release $UPDATED_VERSION ($DATE)
-          - $PR_TITLE
-          
+          - $PR_BRANCH_NAME
+
           "
 
           awk -v n="$TARGET_LINE" -v entry="$ENTRY" '
